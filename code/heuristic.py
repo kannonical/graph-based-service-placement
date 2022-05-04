@@ -4,6 +4,8 @@ from itertools import islice
 from networkx.classes.function import path_weight
 import matplotlib.pyplot as plt
 
+#The function finds all paths in a graph from the "start" to the "end" node
+
 def find_all_paths(graph, start, end, path=[]):
 	path = path + [start]
 	if start == end:
@@ -41,9 +43,17 @@ def find_all_paths(graph, start, end, path=[]):
 #print paths
 	
 
+
 if __name__ == "__main__":
+
+#We first produce an infrastructural graph, whith 10 nodes
+#which is grown by attaching new nodes, each with 5 edges 
+#that are preferntially attached to exisiting nodes with higher degrees
+#To test a less connected network, use parameters like (10,1)
+#Any other graph type can also be used
+
     graph = nx.barabasi_albert_graph(10,5)
-    graph.nodes[0]['compute'] = 150
+    graph.nodes[0]['compute'] = 150 
     graph.nodes[1]['compute'] = 500
     graph.nodes[2]['compute'] = 100
     graph.nodes[3]['compute'] = 250
@@ -87,7 +97,7 @@ for path in k_shortest_paths(graph,1,2,6):
 #print(min[0])
 ##print(paths)
 
-# attempt to find larget path!
+# To find longest path!
 largest_path = None
 largest_path_weight= 0
 
@@ -110,7 +120,8 @@ print("weight", largest_path_weight)
 for s,t in graph.edges():
         graph[s][t]['weight'] = random.randint(10,100)
 
-
+#The service graph is modeled as a simple linear graph
+#with compute and bandwidth requirements 
 
 service_graph = nx.Graph()
 service_graph.add_edges_from([(0,1),(1,2),(2,3)])
@@ -132,12 +143,15 @@ total = 0
 #service_placement(largest_path,graph,service_graph)
 map = {}
 map1 = {}
+
+#The function iterates over all paths to place each node of a service graph on the infrastructural graph
+
 def service_placement(paths,largest_path,graph,service_graph):
     total=0
     sum_edge = 0
 #    print("test")
     for path in paths: 
-#        for j,i in zip(range(len(path)),service_graph):        #zip is running for shorter or longer of the two lists? If there are only two paths, the problem is service 
+#        for j,i in zip(range(len(path)),service_graph):       
         for i,l,d in service_graph.edges(data=True):
             for j,k,f in graph.edges(data=True):
                 if (d['weight'] < f['weight']):
